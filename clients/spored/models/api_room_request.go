@@ -46,9 +46,7 @@ type APIRoomRequest struct {
 	// operating mode
 	// Required: true
 	// Enum: ["CLOSED","WEEKDAYS","WEEKENDS","ALL"]
-	OperatingMode struct {
-		ModelsRoomOperatingMode
-	} `json:"operating_mode"`
+	OperatingMode *string `json:"operating_mode"`
 
 	// rows
 	// Required: true
@@ -158,9 +156,7 @@ func (m *APIRoomRequest) validateOpeningHour(formats strfmt.Registry) error {
 var apiRoomRequestTypeOperatingModePropEnum []any
 
 func init() {
-	var res []struct {
-		ModelsRoomOperatingMode
-	}
+	var res []string
 	if err := json.Unmarshal([]byte(`["CLOSED","WEEKDAYS","WEEKENDS","ALL"]`), &res); err != nil {
 		panic(err)
 	}
@@ -169,10 +165,23 @@ func init() {
 	}
 }
 
+const (
+
+	// APIRoomRequestOperatingModeCLOSED captures enum value "CLOSED"
+	APIRoomRequestOperatingModeCLOSED string = "CLOSED"
+
+	// APIRoomRequestOperatingModeWEEKDAYS captures enum value "WEEKDAYS"
+	APIRoomRequestOperatingModeWEEKDAYS string = "WEEKDAYS"
+
+	// APIRoomRequestOperatingModeWEEKENDS captures enum value "WEEKENDS"
+	APIRoomRequestOperatingModeWEEKENDS string = "WEEKENDS"
+
+	// APIRoomRequestOperatingModeALL captures enum value "ALL"
+	APIRoomRequestOperatingModeALL string = "ALL"
+)
+
 // prop value enum
-func (m *APIRoomRequest) validateOperatingModeEnum(path, location string, value *struct {
-	ModelsRoomOperatingMode
-}) error {
+func (m *APIRoomRequest) validateOperatingModeEnum(path, location string, value string) error {
 	if err := validate.EnumCase(path, location, value, apiRoomRequestTypeOperatingModePropEnum, true); err != nil {
 		return err
 	}
@@ -180,6 +189,15 @@ func (m *APIRoomRequest) validateOperatingModeEnum(path, location string, value 
 }
 
 func (m *APIRoomRequest) validateOperatingMode(formats strfmt.Registry) error {
+
+	if err := validate.Required("operating_mode", "body", m.OperatingMode); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateOperatingModeEnum("operating_mode", "body", *m.OperatingMode); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -201,22 +219,8 @@ func (m *APIRoomRequest) validateRows(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this api room request based on the context it is used
+// ContextValidate validates this api room request based on context it is used
 func (m *APIRoomRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateOperatingMode(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *APIRoomRequest) contextValidateOperatingMode(ctx context.Context, formats strfmt.Registry) error {
-
 	return nil
 }
 

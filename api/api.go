@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/PRPO-skupina-02/common/middleware"
+	"github.com/PRPO-skupina-02/nakup/services"
 	_ "github.com/PRPO-skupina-02/spored/api/docs"
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
@@ -19,7 +20,7 @@ import (
 //	@host		localhost:8081
 //	@BasePath	/api/v1
 
-func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
+func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotValidator services.TimeSlotValidator) {
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
 
@@ -31,9 +32,15 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator) {
 	v1.Use(middleware.TransactionMiddleware(db))
 	v1.Use(middleware.TranslationMiddleware(trans))
 	v1.Use(middleware.ErrorMiddleware)
+	v1.Use(TimeSlotValidatorMiddleware(timeSlotValidator))
 
 	// Reservations
 
+	v1.GET("/reservations", ReservationsList)
+	v1.POST("/reservations", ReservationsCreate)
+	v1.GET("/reservations/:reservationID", ReservationsShow)
+	v1.PUT("/reservations/:reservationID", ReservationsUpdate)
+	v1.DELETE("/reservations/:reservationID", ReservationsDelete)
 }
 
 func healthcheck(c *gin.Context) {

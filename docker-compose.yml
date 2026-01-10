@@ -8,9 +8,9 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: nakup
     volumes:
-      - pgdata:/var/lib/postgresql/data 
+      - nakup-pgdata:/var/lib/postgresql/data 
     ports:
-      - 5433:5433
+      - 5433:5432
     networks:
       - cinecore-net
 
@@ -38,4 +38,4 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  nakup-pgdata:

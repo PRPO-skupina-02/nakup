@@ -22,9 +22,10 @@ type Reservation struct {
 
 	TimeSlotID uuid.UUID
 	UserID     uuid.UUID
+	Type       ReservationType
 
-	Row    int
-	Column int
+	Row int
+	Col int
 }
 
 func (r *Reservation) Create(tx *gorm.DB) error {

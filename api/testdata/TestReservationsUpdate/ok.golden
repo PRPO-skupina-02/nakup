@@ -1,0 +1,10 @@
+{
+	"id": "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+	"created_at": "2025-12-01T08:00:00Z",
+	"updated_at": "-- Dynamic value --",
+	"time_slot_id": "eed99bc8-1fb4-443b-8287-a988a3bc4406",
+	"user_id": "22222222-2222-2222-2222-222222222222",
+	"type": "POS",
+	"row": 10,
+	"col": 15
+}
