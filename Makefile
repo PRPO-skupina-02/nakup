@@ -11,6 +11,7 @@ test-update:
 install-cli-tools:
 	go install github.com/joho/godotenv/cmd/godotenv@latest
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
 	go install github.com/go-swagger/go-swagger/cmd/swagger@latest
 
 migrate:
