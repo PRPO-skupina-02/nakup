@@ -398,7 +398,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8081",
-	BasePath:         "/api/v1",
+	BasePath:         "/api/v1/nakup",
 	Schemes:          []string{},
 	Title:            "Nakup API",
 	Description:      "API za upravljanje z kinodvoranami in njihovim sporedom",

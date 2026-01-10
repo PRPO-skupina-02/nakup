@@ -7,7 +7,7 @@
         "version": "1.0"
     },
     "host": "localhost:8081",
-    "basePath": "/api/v1",
+    "basePath": "/api/v1/nakup",
     "paths": {
         "/reservations": {
             "get": {

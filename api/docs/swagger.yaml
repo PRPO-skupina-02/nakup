@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /api/v1/nakup
 definitions:
   api.ReservationRequest:
     properties:

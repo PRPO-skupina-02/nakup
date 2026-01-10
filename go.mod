@@ -3,7 +3,7 @@ module github.com/PRPO-skupina-02/nakup
 go 1.25.5
 
 require (
-	github.com/PRPO-skupina-02/common v0.4.0
+	github.com/PRPO-skupina-02/common v0.4.1
 	github.com/PRPO-skupina-02/spored v0.0.0-20260108162636-4b3112590a64
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-openapi/errors v0.22.6
