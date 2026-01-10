@@ -1,0 +1,9 @@
+{
+	"code": 400,
+	"message": "validation error",
+	"fields": {
+		"col": "col must be 1 or greater",
+		"row": "row is a required field",
+		"type": "type must be one of [ONLINE POS]"
+	}
+}

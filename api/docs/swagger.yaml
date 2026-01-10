@@ -1,0 +1,262 @@
+basePath: /api/v1/nakup
+definitions:
+  api.ReservationRequest:
+    properties:
+      col:
+        minimum: 1
+        type: integer
+      room_id:
+        type: string
+      row:
+        minimum: 1
+        type: integer
+      theater_id:
+        type: string
+      time_slot_id:
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/models.ReservationType'
+        enum:
+        - ONLINE
+        - POS
+    required:
+    - col
+    - room_id
+    - row
+    - theater_id
+    - time_slot_id
+    - type
+    type: object
+  api.ReservationResponse:
+    properties:
+      col:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      row:
+        type: integer
+      time_slot_id:
+        type: string
+      type:
+        $ref: '#/definitions/models.ReservationType'
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  middleware.HttpError:
+    properties:
+      code:
+        type: integer
+      fields:
+        additionalProperties:
+          type: string
+        type: object
+      message:
+        type: string
+    type: object
+  models.ReservationType:
+    enum:
+    - ONLINE
+    - POS
+    type: string
+    x-enum-varnames:
+    - Online
+    - Pos
+host: localhost:8081
+info:
+  contact: {}
+  description: API za upravljanje z kinodvoranami in njihovim sporedom
+  title: Nakup API
+  version: "1.0"
+paths:
+  /reservations:
+    get:
+      consumes:
+      - application/json
+      description: List reservations
+      operationId: ReservationsList
+      parameters:
+      - default: 10
+        description: Limit the number of responses
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset the first response
+        in: query
+        name: offset
+        type: integer
+      - description: Sort results
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.ReservationResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: List reservations
+      tags:
+      - reservations
+    post:
+      consumes:
+      - application/json
+      description: Create reservation
+      operationId: ReservationsCreate
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ReservationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ReservationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Create reservation
+      tags:
+      - reservations
+  /reservations/{reservationID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete reservation
+      operationId: ReservationsDelete
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Delete reservation
+      tags:
+      - reservations
+    get:
+      consumes:
+      - application/json
+      description: Show reservation
+      operationId: ReservationsShow
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ReservationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Show reservation
+      tags:
+      - reservations
+    put:
+      consumes:
+      - application/json
+      description: Update reservation
+      operationId: ReservationsUpdate
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ReservationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ReservationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Update reservation
+      tags:
+      - reservations
+swagger: "2.0"

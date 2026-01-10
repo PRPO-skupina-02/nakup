@@ -1,0 +1,32 @@
+[
+	{
+		"ID": "bae209f6-d059-11f0-b2a4-cbf992c2eb6d",
+		"CreatedAt": "2025-11-30T23:59:59Z",
+		"UpdatedAt": "-- Dynamic value --",
+		"TimeSlotID": "9d71d7fd-d88e-41a1-86dc-21b7f2550295",
+		"UserID": "11111111-1111-1111-1111-111111111111",
+		"Type": "ONLINE",
+		"Row": 5,
+		"Col": 10
+	},
+	{
+		"ID": "ea0b7f96-ddc9-11f0-9635-23efd36396bd",
+		"CreatedAt": "2025-10-01T08:00:00Z",
+		"UpdatedAt": "-- Dynamic value --",
+		"TimeSlotID": "eed99bc8-1fb4-443b-8287-a988a3bc4406",
+		"UserID": "11111111-1111-1111-1111-111111111111",
+		"Type": "ONLINE",
+		"Row": 1,
+		"Col": 1
+	},
+	{
+		"ID": "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		"CreatedAt": "2025-12-01T08:00:00Z",
+		"UpdatedAt": "-- Dynamic value --",
+		"TimeSlotID": "5475b333-1883-4261-8b58-944235693558",
+		"UserID": "22222222-2222-2222-2222-222222222222",
+		"Type": "POS",
+		"Row": 3,
+		"Col": 8
+	}
+]
