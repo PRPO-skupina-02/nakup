@@ -27,7 +27,7 @@ jobs:
 
       - name: Generate docs
         run: |
-          npm run docs
+          make docs
 
       - name: Check if swagger files have changes
         run: |
