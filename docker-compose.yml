@@ -1,0 +1,41 @@
+services:
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nakup
+    volumes:
+      - pgdata:/var/lib/postgresql/data 
+    ports:
+      - 5433:5433
+    networks:
+      - cinecore-net
+
+  nakup:
+    ports:
+      - "8081:8081"
+    networks:
+      - cinecore-net
+    build: .
+    depends_on:
+      - db
+    environment:
+      - LOG_LEVEL=DEBUG
+      - TZ=
+      - POSTGRES_IP=db
+      - POSTGRES_PORT=5433
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE_NAME=nakup
+      - POSTGRES_TEST_DATABASE_NAME=nakup_test
+
+networks:
+  cinecore-net:
+    name: cinecore-net
+    driver: bridge
+
+volumes:
+  pgdata:
