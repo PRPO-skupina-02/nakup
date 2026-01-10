@@ -146,7 +146,7 @@ func TestReservationsCreate(t *testing.T) {
 
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w, ignoreResp)
-			xtesting.AssertGoldenDatabaseTable(t, db.Order("time_slot_id"), []models.Reservation{}, ignoreReservations)
+			xtesting.AssertGoldenDatabaseTable(t, db.Order("time_slot_id, row, col"), []models.Reservation{}, ignoreReservations)
 		})
 	}
 }
