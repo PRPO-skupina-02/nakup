@@ -52,7 +52,7 @@ func TestReservationsList(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/reservations%s", testCase.params)
+			targetURL := fmt.Sprintf("/api/v1/nakup/reservations%s", testCase.params)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -128,7 +128,7 @@ func TestReservationsCreate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := "/api/v1/reservations"
+			targetURL := "/api/v1/nakup/reservations"
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPost, testCase.body)
 			assert.NoError(t, err)
@@ -188,7 +188,7 @@ func TestReservationsShow(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/reservations/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/nakup/reservations/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
 			w := httptest.NewRecorder()
@@ -297,7 +297,7 @@ func TestReservationsUpdate(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/reservations/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/nakup/reservations/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodPut, testCase.body)
 			assert.NoError(t, err)
@@ -355,7 +355,7 @@ func TestReservationsDelete(t *testing.T) {
 			err := fixtures.Load()
 			assert.NoError(t, err)
 
-			targetURL := fmt.Sprintf("/api/v1/reservations/%s", testCase.id)
+			targetURL := fmt.Sprintf("/api/v1/nakup/reservations/%s", testCase.id)
 
 			req := xtesting.NewTestingRequest(t, targetURL, http.MethodDelete, nil)
 			w := httptest.NewRecorder()
