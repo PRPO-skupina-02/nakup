@@ -1,5 +1,45 @@
 basePath: /api/v1/nakup
 definitions:
+  api.PurchaseRequest:
+    properties:
+      count:
+        minimum: 1
+        type: integer
+      name:
+        minLength: 3
+        type: string
+      price_per_item_cents:
+        minimum: 0
+        type: integer
+      type:
+        enum:
+        - FOOD
+        - DRINK
+        - SNACK
+        type: string
+    required:
+    - count
+    - name
+    - price_per_item_cents
+    - type
+    type: object
+  api.PurchaseResponse:
+    properties:
+      count:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price_per_item_cents:
+        type: integer
+      type:
+        $ref: '#/definitions/models.PurchaseType'
+      updated_at:
+        type: string
+    type: object
   api.ReservationRequest:
     properties:
       col:
@@ -58,6 +98,16 @@ definitions:
       message:
         type: string
     type: object
+  models.PurchaseType:
+    enum:
+    - FOOD
+    - DRINK
+    - SNACK
+    type: string
+    x-enum-varnames:
+    - Food
+    - Drink
+    - Snack
   models.ReservationType:
     enum:
     - ONLINE
@@ -259,4 +309,220 @@ paths:
       summary: Update reservation
       tags:
       - reservations
+  /reservations/{reservationID}/purchases:
+    get:
+      consumes:
+      - application/json
+      description: List purchases
+      operationId: PurchasesList
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - default: 10
+        description: Limit the number of responses
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset the first response
+        in: query
+        name: offset
+        type: integer
+      - description: Sort results
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.PurchaseResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: List purchases
+      tags:
+      - purchases
+    post:
+      consumes:
+      - application/json
+      description: Create purchase
+      operationId: PurchasesCreate
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Create purchase
+      tags:
+      - purchases
+  /reservations/{reservationID}/purchases/{purchaseID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete purchase
+      operationId: PurchasesDelete
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - description: Purchase ID
+        format: uuid
+        in: path
+        name: purchaseID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Delete purchase
+      tags:
+      - purchases
+    get:
+      consumes:
+      - application/json
+      description: Show purchase
+      operationId: PurchasesShow
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - description: Purchase ID
+        format: uuid
+        in: path
+        name: purchaseID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Show purchase
+      tags:
+      - purchases
+    put:
+      consumes:
+      - application/json
+      description: Update purchase
+      operationId: PurchasesUpdate
+      parameters:
+      - description: Reservation ID
+        format: uuid
+        in: path
+        name: reservationID
+        required: true
+        type: string
+      - description: Purchase ID
+        format: uuid
+        in: path
+        name: purchaseID
+        required: true
+        type: string
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PurchaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: Update purchase
+      tags:
+      - purchases
 swagger: "2.0"

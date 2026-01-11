@@ -1,0 +1,9 @@
+{
+	"id": "-- Dynamic value --",
+	"created_at": "-- Dynamic value --",
+	"updated_at": "-- Dynamic value --",
+	"type": "FOOD",
+	"name": "Candy Bar",
+	"count": 3,
+	"price_per_item_cents": 250
+}

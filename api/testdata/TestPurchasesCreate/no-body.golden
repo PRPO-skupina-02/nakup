@@ -1,0 +1,10 @@
+{
+	"code": 400,
+	"message": "validation error",
+	"fields": {
+		"count": "count is a required field",
+		"name": "name is a required field",
+		"price_per_item_cents": "price_per_item_cents is a required field",
+		"type": "type is a required field"
+	}
+}

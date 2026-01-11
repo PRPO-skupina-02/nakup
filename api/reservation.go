@@ -144,19 +144,7 @@ func ReservationsCreate(c *gin.Context) {
 //	@Failure		500				{object}	middleware.HttpError
 //	@Router			/reservations/{reservationID} [get]
 func ReservationsShow(c *gin.Context) {
-	tx := middleware.GetContextTransaction(c)
-	id, err := request.GetUUIDParam(c, "reservationID")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	reservation, err := models.GetReservation(tx, id)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
+	reservation := GetContextReservation(c)
 	c.JSON(http.StatusOK, newReservationResponse(reservation))
 }
 
@@ -178,26 +166,16 @@ func ReservationsShow(c *gin.Context) {
 func ReservationsUpdate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
 	validator := GetTimeSlotValidator(c)
-	id, err := request.GetUUIDParam(c, "reservationID")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
+	reservation := GetContextReservation(c)
 
 	var req ReservationRequest
-	err = c.ShouldBindJSON(&req)
+	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
 	err = validator.ValidateTimeSlotExists(req.TheaterID, req.RoomID, req.TimeSlotID)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	reservation, err := models.GetReservation(tx, id)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -233,13 +211,9 @@ func ReservationsUpdate(c *gin.Context) {
 //	@Router			/reservations/{reservationID} [delete]
 func ReservationsDelete(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	id, err := request.GetUUIDParam(c, "reservationID")
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
+	reservation := GetContextReservation(c)
 
-	err = models.DeleteReservation(tx, id)
+	err := models.DeleteReservation(tx, reservation.ID)
 	if err != nil {
 		_ = c.Error(err)
 		return

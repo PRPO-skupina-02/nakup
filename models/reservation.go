@@ -26,6 +26,8 @@ type Reservation struct {
 
 	Row int
 	Col int
+
+	Purchases []Purchase `gorm:"foreignKey:ReservationID" json:"-"`
 }
 
 func (r *Reservation) Create(tx *gorm.DB) error {
@@ -76,8 +78,15 @@ func DeleteReservation(tx *gorm.DB, id uuid.UUID) error {
 		ID: id,
 	}
 
-	if err := tx.Where(&reservation).First(&reservation).Error; err != nil {
+	if err := tx.Where(&reservation).Preload("Purchases").First(&reservation).Error; err != nil {
 		return err
+	}
+
+	for _, purchase := range reservation.Purchases {
+		err := DeletePurchase(tx, id, purchase.ID)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := tx.Delete(&reservation).Error; err != nil {

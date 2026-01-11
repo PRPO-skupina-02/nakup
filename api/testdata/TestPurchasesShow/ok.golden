@@ -1,0 +1,9 @@
+{
+	"id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+	"created_at": "2025-11-30T23:59:59Z",
+	"updated_at": "2025-11-30T23:59:59Z",
+	"type": "FOOD",
+	"name": "Popcorn",
+	"count": 1,
+	"price_per_item_cents": 550
+}

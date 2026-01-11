@@ -365,6 +365,7 @@ func TestReservationsDelete(t *testing.T) {
 			assert.Equal(t, testCase.status, w.Code)
 			xtesting.AssertGoldenJSON(t, w)
 			xtesting.AssertGoldenDatabaseTable(t, db, []models.Reservation{}, nil)
+			xtesting.AssertGoldenDatabaseTable(t, db, []models.Purchase{}, nil)
 		})
 	}
 }
