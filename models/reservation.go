@@ -83,7 +83,7 @@ func DeleteReservation(tx *gorm.DB, id uuid.UUID) error {
 	}
 
 	for _, purchase := range reservation.Purchases {
-		err := DeletePurchase(tx, purchase.ID)
+		err := DeletePurchase(tx, id, purchase.ID)
 		if err != nil {
 			return err
 		}

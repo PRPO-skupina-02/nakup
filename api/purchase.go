@@ -224,13 +224,14 @@ func PurchasesUpdate(c *gin.Context) {
 //	@Router			/reservations/{reservationID}/purchases/{purchaseID} [delete]
 func PurchasesDelete(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
+	reservation := GetContextReservation(c)
 	id, err := request.GetUUIDParam(c, "purchaseID")
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	err = models.DeletePurchase(tx, id)
+	err = models.DeletePurchase(tx, reservation.ID, id)
 	if err != nil {
 		_ = c.Error(err)
 		return

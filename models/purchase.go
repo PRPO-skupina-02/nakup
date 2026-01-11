@@ -74,9 +74,10 @@ func GetPurchase(tx *gorm.DB, reservationID, purchaseID uuid.UUID) (Purchase, er
 	return reservation, nil
 }
 
-func DeletePurchase(tx *gorm.DB, id uuid.UUID) error {
+func DeletePurchase(tx *gorm.DB, reservationID, purchaseID uuid.UUID) error {
 	purchase := Purchase{
-		ID: id,
+		ID:            purchaseID,
+		ReservationID: reservationID,
 	}
 
 	if err := tx.Where(&purchase).First(&purchase).Error; err != nil {
