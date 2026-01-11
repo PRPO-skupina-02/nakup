@@ -1,0 +1,42 @@
+[
+	{
+		"ID": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+		"CreatedAt": "2025-11-30T23:59:59Z",
+		"UpdatedAt": "2025-11-30T23:59:59Z",
+		"ReservationID": "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		"Type": "FOOD",
+		"Name": "Popcorn",
+		"Count": 1,
+		"PricePerItemCents": 550
+	},
+	{
+		"ID": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+		"CreatedAt": "2025-12-01T08:00:00Z",
+		"UpdatedAt": "2025-12-03T08:00:00Z",
+		"ReservationID": "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		"Type": "DRINK",
+		"Name": "Cola",
+		"Count": 2,
+		"PricePerItemCents": 350
+	},
+	{
+		"ID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+		"CreatedAt": "2025-12-01T08:00:00Z",
+		"UpdatedAt": "2025-12-03T08:00:00Z",
+		"ReservationID": "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		"Type": "SNACK",
+		"Name": "Nachos",
+		"Count": 1,
+		"PricePerItemCents": 450
+	},
+	{
+		"ID": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+		"CreatedAt": "2025-12-01T08:00:00Z",
+		"UpdatedAt": "2025-12-03T08:00:00Z",
+		"ReservationID": "bae209f6-d059-11f0-b2a4-cbf992c2eb6d",
+		"Type": "FOOD",
+		"Name": "Hot Dog",
+		"Count": 1,
+		"PricePerItemCents": 400
+	}
+]
