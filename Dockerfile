@@ -12,7 +12,9 @@ COPY . .
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /nakup
 
-FROM scratch
+FROM nginx:alpine
+
+RUN apk add --no-cache curl
 
 WORKDIR /app
 

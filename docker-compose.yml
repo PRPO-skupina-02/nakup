@@ -22,7 +22,8 @@ services:
       - "8081:8081"
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - LOG_LEVEL=DEBUG
       - TZ=
@@ -32,6 +33,11 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DATABASE_NAME=nakup
       - POSTGRES_TEST_DATABASE_NAME=nakup_test
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/healthcheck"]
+      interval: 3s
+      timeout: 10s
+      retries: 5
 
 volumes:
   nakup-pgdata:
