@@ -10,7 +10,7 @@ services:
     volumes:
       - nakup-pgdata:/var/lib/postgresql/data 
     ports:
-      - 5433:5432
+      - 5442:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 3s
@@ -28,7 +28,7 @@ services:
       - LOG_LEVEL=DEBUG
       - TZ=
       - POSTGRES_IP=db
-      - POSTGRES_PORT=5433
+      - POSTGRES_PORT=5442
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DATABASE_NAME=nakup

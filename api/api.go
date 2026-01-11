@@ -35,12 +35,21 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotVali
 	v1.Use(TimeSlotValidatorMiddleware(timeSlotValidator))
 
 	// Reservations
+	reservations := v1.Group("/reservations/:reservationID")
+	reservations.Use(ReservationContextMiddleware)
 
 	v1.GET("/reservations", ReservationsList)
+	reservations.GET("", ReservationsShow)
 	v1.POST("/reservations", ReservationsCreate)
-	v1.GET("/reservations/:reservationID", ReservationsShow)
-	v1.PUT("/reservations/:reservationID", ReservationsUpdate)
-	v1.DELETE("/reservations/:reservationID", ReservationsDelete)
+	reservations.PUT("", ReservationsUpdate)
+	reservations.DELETE("", ReservationsDelete)
+
+	// Purchases
+	reservations.GET("/purchases", PurchasesList)
+	reservations.GET("/purchases/:purchaseID", PurchasesShow)
+	reservations.POST("/purchases", PurchasesCreate)
+	reservations.PUT("/purchases/:purchaseID", PurchasesUpdate)
+	reservations.DELETE("/purchases/:purchaseID", PurchasesDelete)
 }
 
 func healthcheck(c *gin.Context) {

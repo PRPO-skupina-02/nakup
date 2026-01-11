@@ -26,6 +26,8 @@ type Reservation struct {
 
 	Row int
 	Col int
+
+	Purchases []Purchase `gorm:"foreignKey:ReservationID" json:"-"`
 }
 
 func (r *Reservation) Create(tx *gorm.DB) error {
