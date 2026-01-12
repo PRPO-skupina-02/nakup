@@ -19,7 +19,7 @@ services:
 
   nakup:
     ports:
-      - "8081:8081"
+      - "8081:8080"
     restart: always
     build: .
     depends_on:
@@ -36,7 +36,7 @@ services:
       - POSTGRES_TEST_DATABASE_NAME=nakup_test
       - SPORED_HOST=localhost:8080
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/healthcheck"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthcheck"]
       interval: 3s
       timeout: 10s
       retries: 5
