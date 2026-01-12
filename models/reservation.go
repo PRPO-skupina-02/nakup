@@ -73,6 +73,21 @@ func GetReservation(tx *gorm.DB, id uuid.UUID) (Reservation, error) {
 	return reservation, nil
 }
 
+func CheckDuplicateReservation(tx *gorm.DB, timeSlotID uuid.UUID, row, col int, excludeID *uuid.UUID) (bool, error) {
+	query := tx.Model(&Reservation{}).Where("time_slot_id = ? AND row = ? AND col = ?", timeSlotID, row, col)
+
+	if excludeID != nil {
+		query = query.Where("id != ?", excludeID)
+	}
+
+	var count int64
+	if err := query.Count(&count).Error; err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
 func DeleteReservation(tx *gorm.DB, id uuid.UUID) error {
 	reservation := Reservation{
 		ID: id,

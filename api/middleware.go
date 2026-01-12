@@ -12,23 +12,23 @@ import (
 )
 
 const (
-	TimeSlotValidatorKey  = "timeslot_validator"
+	TimeSlotServiceKey    = "timeslot_service"
 	contextReservationKey = "reservation"
 )
 
-func TimeSlotValidatorMiddleware(validator services.TimeSlotValidator) gin.HandlerFunc {
+func TimeSlotServiceMiddleware(service services.TimeSlotService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set(TimeSlotValidatorKey, validator)
+		c.Set(TimeSlotServiceKey, service)
 		c.Next()
 	}
 }
 
-func GetTimeSlotValidator(c *gin.Context) services.TimeSlotValidator {
-	timeSlotValidator, exists := c.Get(TimeSlotValidatorKey)
+func GetTimeSlotService(c *gin.Context) services.TimeSlotService {
+	timeSlotService, exists := c.Get(TimeSlotServiceKey)
 	if !exists {
 		return nil
 	}
-	return timeSlotValidator.(services.TimeSlotValidator)
+	return timeSlotService.(services.TimeSlotService)
 }
 
 func SetContextReservation(c *gin.Context, reservation models.Reservation) {

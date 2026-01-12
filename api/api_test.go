@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestingRouter(t *testing.T, db *gorm.DB, validator services.TimeSlotValidator) *gin.Engine {
+func TestingRouter(t *testing.T, db *gorm.DB, timeSlotService services.TimeSlotService) *gin.Engine {
 	router := gin.Default()
 	trans, err := validation.RegisterValidation()
 	require.NoError(t, err)
-	Register(router, db, trans, validator)
+	Register(router, db, trans, timeSlotService)
 
 	return router
 }

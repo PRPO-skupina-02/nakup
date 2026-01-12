@@ -11,8 +11,8 @@ import (
 	"github.com/PRPO-skupina-02/common/validation"
 	"github.com/PRPO-skupina-02/nakup/api"
 	"github.com/PRPO-skupina-02/nakup/clients/spored/client"
+	"github.com/PRPO-skupina-02/nakup/db"
 	"github.com/PRPO-skupina-02/nakup/services"
-	"github.com/PRPO-skupina-02/spored/db"
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
 )
@@ -46,10 +46,10 @@ func run() error {
 	transportConfig := client.DefaultTransportConfig().WithHost(sporedHost)
 	sporedClient := client.NewHTTPClientWithConfig(strfmt.Default, transportConfig)
 
-	timeSlotValidator := services.NewSporedTimeSlotValidator(sporedClient.Timeslots)
+	timeSlotService := services.NewSporedTimeSlotService(sporedClient)
 
 	router := gin.Default()
-	api.Register(router, db, trans, timeSlotValidator)
+	api.Register(router, db, trans, timeSlotService)
 
 	slog.Info("Server startup complete")
 	err = router.Run(":8081")

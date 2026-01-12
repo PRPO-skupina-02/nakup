@@ -1,11 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/PRPO-skupina-02/common/middleware"
 	"github.com/PRPO-skupina-02/common/request"
+	"github.com/PRPO-skupina-02/common/validation"
 	"github.com/PRPO-skupina-02/nakup/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -96,7 +98,7 @@ type ReservationRequest struct {
 //	@Router			/reservations [post]
 func ReservationsCreate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	validator := GetTimeSlotValidator(c)
+	timeSlotService := GetTimeSlotService(c)
 
 	var req ReservationRequest
 	err := c.ShouldBindJSON(&req)
@@ -105,9 +107,38 @@ func ReservationsCreate(c *gin.Context) {
 		return
 	}
 
-	err = validator.ValidateTimeSlotExists(req.TheaterID, req.RoomID, req.TimeSlotID)
+	timeSlotInfo, err := timeSlotService.ValidateTimeSlotExists(req.TheaterID, req.RoomID, req.TimeSlotID)
 	if err != nil {
 		_ = c.Error(err)
+		return
+	}
+
+	validator, err := validation.GetDefaultValidationEngine()
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = validator.VarWithKey("row", req.Row, fmt.Sprintf("required,min=1,max=%d", timeSlotInfo.Rows))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = validator.VarWithKey("col", req.Col, fmt.Sprintf("required,min=1,max=%d", timeSlotInfo.Columns))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	hasDuplicate, err := models.CheckDuplicateReservation(tx, req.TimeSlotID, req.Row, req.Col, nil)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if hasDuplicate {
+		_ = c.Error(middleware.NewBadRequestError("seat already reserved"))
 		return
 	}
 
@@ -165,7 +196,7 @@ func ReservationsShow(c *gin.Context) {
 //	@Router			/reservations/{reservationID} [put]
 func ReservationsUpdate(c *gin.Context) {
 	tx := middleware.GetContextTransaction(c)
-	validator := GetTimeSlotValidator(c)
+	timeSlotService := GetTimeSlotService(c)
 	reservation := GetContextReservation(c)
 
 	var req ReservationRequest
@@ -175,9 +206,38 @@ func ReservationsUpdate(c *gin.Context) {
 		return
 	}
 
-	err = validator.ValidateTimeSlotExists(req.TheaterID, req.RoomID, req.TimeSlotID)
+	timeSlotInfo, err := timeSlotService.ValidateTimeSlotExists(req.TheaterID, req.RoomID, req.TimeSlotID)
 	if err != nil {
 		_ = c.Error(err)
+		return
+	}
+
+	validator, err := validation.GetDefaultValidationEngine()
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = validator.VarWithKey("row", req.Row, fmt.Sprintf("required,min=1,max=%d", timeSlotInfo.Rows))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = validator.VarWithKey("col", req.Col, fmt.Sprintf("required,min=1,max=%d", timeSlotInfo.Columns))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	hasDuplicate, err := models.CheckDuplicateReservation(tx, req.TimeSlotID, req.Row, req.Col, &reservation.ID)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if hasDuplicate {
+		_ = c.Error(middleware.NewBadRequestError("seat already reserved"))
 		return
 	}
 

@@ -17,8 +17,8 @@ import (
 
 func TestPurchasesList(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name          string
@@ -91,8 +91,8 @@ func TestPurchasesList(t *testing.T) {
 
 func TestPurchasesCreate(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name          string
@@ -192,8 +192,8 @@ func TestPurchasesCreate(t *testing.T) {
 
 func TestPurchasesShow(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name          string
@@ -271,8 +271,8 @@ func TestPurchasesShow(t *testing.T) {
 
 func TestPurchasesUpdate(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name          string
@@ -425,8 +425,8 @@ func TestPurchasesUpdate(t *testing.T) {
 
 func TestPurchasesDelete(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name          string

@@ -18,8 +18,8 @@ import (
 
 func TestReservationsList(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name   string
@@ -67,14 +67,14 @@ func TestReservationsList(t *testing.T) {
 
 func TestReservationsCreate(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	theaterID := uuid.MustParse("bae209f6-d059-11f0-b2a4-cbf992c2eb6d")
 	roomID := uuid.MustParse("925c2358-df46-11f0-a38e-abe580bde3d1")
 	timeSlotID := uuid.MustParse("9d71d7fd-d88e-41a1-86dc-21b7f2550295")
 
-	validator.AddValidTimeSlot(theaterID, roomID, timeSlotID)
+	service.AddValidTimeSlotWithRoom(theaterID, roomID, timeSlotID, 10, 15)
 
 	tests := []struct {
 		name   string
@@ -102,6 +102,42 @@ func TestReservationsCreate(t *testing.T) {
 				Type:       "INVALID",
 				Row:        0,
 				Col:        -5,
+			},
+			status: http.StatusBadRequest,
+		},
+		{
+			name: "row-too-large",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        11,
+				Col:        5,
+			},
+			status: http.StatusBadRequest,
+		},
+		{
+			name: "col-too-large",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        5,
+				Col:        16,
+			},
+			status: http.StatusBadRequest,
+		},
+		{
+			name: "duplicate-seat",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        5,
+				Col:        10,
 			},
 			status: http.StatusBadRequest,
 		},
@@ -153,8 +189,8 @@ func TestReservationsCreate(t *testing.T) {
 
 func TestReservationsShow(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name   string
@@ -203,16 +239,16 @@ func TestReservationsShow(t *testing.T) {
 
 func TestReservationsUpdate(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	theaterID := uuid.MustParse("bae209f6-d059-11f0-b2a4-cbf992c2eb6d")
 	roomID := uuid.MustParse("925c2358-df46-11f0-a38e-abe580bde3d1")
 	timeSlotID1 := uuid.MustParse("eed99bc8-1fb4-443b-8287-a988a3bc4406")
 	timeSlotID2 := uuid.MustParse("9d71d7fd-d88e-41a1-86dc-21b7f2550295")
 
-	validator.AddValidTimeSlot(theaterID, roomID, timeSlotID1)
-	validator.AddValidTimeSlot(theaterID, roomID, timeSlotID2)
+	service.AddValidTimeSlotWithRoom(theaterID, roomID, timeSlotID1, 12, 18)
+	service.AddValidTimeSlotWithRoom(theaterID, roomID, timeSlotID2, 10, 15)
 
 	tests := []struct {
 		name   string
@@ -242,6 +278,45 @@ func TestReservationsUpdate(t *testing.T) {
 				Type:       "INVALID",
 				Row:        0,
 				Col:        -1,
+			},
+			status: http.StatusBadRequest,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "row-too-large",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID2,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        11,
+				Col:        5,
+			},
+			status: http.StatusBadRequest,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "col-too-large",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID2,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        5,
+				Col:        16,
+			},
+			status: http.StatusBadRequest,
+			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
+		},
+		{
+			name: "duplicate-seat",
+			body: ReservationRequest{
+				TimeSlotID: timeSlotID2,
+				TheaterID:  theaterID,
+				RoomID:     roomID,
+				Type:       models.Online,
+				Row:        5,
+				Col:        10,
 			},
 			status: http.StatusBadRequest,
 			id:     "fb126c8c-d059-11f0-8fa4-b35f33be83b7",
@@ -320,8 +395,8 @@ func TestReservationsUpdate(t *testing.T) {
 
 func TestReservationsDelete(t *testing.T) {
 	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
-	validator := services.NewMockTimeSlotValidator()
-	r := TestingRouter(t, db, validator)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
 
 	tests := []struct {
 		name   string

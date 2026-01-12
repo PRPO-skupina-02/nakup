@@ -7,40 +7,59 @@ import (
 	"github.com/google/uuid"
 )
 
-type MockTimeSlotValidator struct {
-	ValidTimeSlots map[string]bool
+type MockTimeSlotInfo struct {
+	Rows    int
+	Columns int
+}
+
+type MockTimeSlotService struct {
+	ValidTimeSlots map[string]MockTimeSlotInfo
 	ShouldError    bool
 	Error          error
 }
 
-func NewMockTimeSlotValidator() *MockTimeSlotValidator {
-	return &MockTimeSlotValidator{
-		ValidTimeSlots: make(map[string]bool),
+func NewMockTimeSlotService() *MockTimeSlotService {
+	return &MockTimeSlotService{
+		ValidTimeSlots: make(map[string]MockTimeSlotInfo),
 		ShouldError:    false,
 	}
 }
 
-func (m *MockTimeSlotValidator) AddValidTimeSlot(theaterID, roomID, timeSlotID uuid.UUID) {
-	key := m.makeKey(theaterID, roomID, timeSlotID)
-	m.ValidTimeSlots[key] = true
+func (m *MockTimeSlotService) AddValidTimeSlot(theaterID, roomID, timeSlotID uuid.UUID) {
+	m.AddValidTimeSlotWithRoom(theaterID, roomID, timeSlotID, 10, 10)
 }
 
-func (m *MockTimeSlotValidator) makeKey(theaterID, roomID, timeSlotID uuid.UUID) string {
+func (m *MockTimeSlotService) AddValidTimeSlotWithRoom(theaterID, roomID, timeSlotID uuid.UUID, rows, columns int) {
+	key := m.makeKey(theaterID, roomID, timeSlotID)
+	m.ValidTimeSlots[key] = MockTimeSlotInfo{
+		Rows:    rows,
+		Columns: columns,
+	}
+}
+
+func (m *MockTimeSlotService) makeKey(theaterID, roomID, timeSlotID uuid.UUID) string {
 	return theaterID.String() + "|" + roomID.String() + "|" + timeSlotID.String()
 }
 
-func (m *MockTimeSlotValidator) ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) error {
+func (m *MockTimeSlotService) ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) (*TimeSlotInfo, error) {
 	if m.ShouldError {
 		if m.Error != nil {
-			return m.Error
+			return nil, m.Error
 		}
-		return errors.New("mock error")
+		return nil, errors.New("mock error")
 	}
 
 	key := m.makeKey(theaterID, roomID, timeSlotID)
-	if !m.ValidTimeSlots[key] {
-		return middleware.NewNotFoundError()
+	info, exists := m.ValidTimeSlots[key]
+	if !exists {
+		return nil, middleware.NewNotFoundError()
 	}
 
-	return nil
+	return &TimeSlotInfo{
+		TimeSlotID: timeSlotID,
+		RoomID:     roomID,
+		TheaterID:  theaterID,
+		Rows:       info.Rows,
+		Columns:    info.Columns,
+	}, nil
 }

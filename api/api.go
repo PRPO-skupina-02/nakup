@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/PRPO-skupina-02/common/middleware"
+	_ "github.com/PRPO-skupina-02/nakup/api/docs"
 	"github.com/PRPO-skupina-02/nakup/services"
-	_ "github.com/PRPO-skupina-02/spored/api/docs"
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
 	swaggerFiles "github.com/swaggo/files"
@@ -20,7 +20,7 @@ import (
 //	@host		localhost:8081
 //	@BasePath	/api/v1/nakup
 
-func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotValidator services.TimeSlotValidator) {
+func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotService services.TimeSlotService) {
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
 
@@ -32,7 +32,7 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotVali
 	v1.Use(middleware.TransactionMiddleware(db))
 	v1.Use(middleware.TranslationMiddleware(trans))
 	v1.Use(middleware.ErrorMiddleware)
-	v1.Use(TimeSlotValidatorMiddleware(timeSlotValidator))
+	v1.Use(TimeSlotServiceMiddleware(timeSlotService))
 
 	// Reservations
 	reservations := v1.Group("/reservations/:reservationID")

@@ -15,10 +15,10 @@ install-cli-tools:
 	go install github.com/go-swagger/go-swagger/cmd/swagger@latest
 
 migrate:
-	migrate -database postgres://postgres:postgres@localhost:5433/nakup?sslmode=disable -path db/migrations up
+	migrate -database postgres://postgres:postgres@localhost:5442/nakup?sslmode=disable -path db/migrations up
 
 migrate-down: 
-	migrate -database postgres://postgres:postgres@localhost:5433/nakup?sslmode=disable -path db/migrations down
+	migrate -database postgres://postgres:postgres@localhost:5442/nakup?sslmode=disable -path db/migrations down
 
 fixtures:
 	godotenv go run ../common/tools/loadfixture/loadfixture.go db/fixtures/
