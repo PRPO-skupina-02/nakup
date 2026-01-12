@@ -41,6 +41,7 @@ func newPurchaseResponse(purchase models.Purchase) PurchaseResponse {
 //	@Tags			purchases
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string	true	"Reservation ID"				Format(uuid)
 //	@Param			limit			query		int		false	"Limit the number of responses"	Default(10)
 //	@Param			offset			query		int		false	"Offset the first response"		Default(0)
@@ -86,6 +87,7 @@ type PurchaseRequest struct {
 //	@Tags			purchases
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string			true	"Reservation ID"	Format(uuid)
 //	@Param			request			body		PurchaseRequest	true	"request body"
 //	@Success		200				{object}	PurchaseResponse
@@ -130,6 +132,7 @@ func PurchasesCreate(c *gin.Context) {
 //	@Tags			purchases
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string	true	"Reservation ID"	Format(uuid)
 //	@Param			purchaseID		path		string	true	"Purchase ID"		Format(uuid)
 //	@Success		200				{object}	PurchaseResponse
@@ -163,6 +166,7 @@ func PurchasesShow(c *gin.Context) {
 //	@Tags			purchases
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string			true	"Reservation ID"	Format(uuid)
 //	@Param			purchaseID		path		string			true	"Purchase ID"		Format(uuid)
 //	@Param			request			body		PurchaseRequest	true	"request body"
@@ -215,6 +219,7 @@ func PurchasesUpdate(c *gin.Context) {
 //	@Tags			purchases
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path	string	true	"Reservation ID"	Format(uuid)
 //	@Param			purchaseID		path	string	true	"Purchase ID"		Format(uuid)
 //	@Success		204

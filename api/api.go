@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/PRPO-skupina-02/common/clients/auth/models"
 	"github.com/PRPO-skupina-02/common/middleware"
 	_ "github.com/PRPO-skupina-02/nakup/api/docs"
 	"github.com/PRPO-skupina-02/nakup/services"
@@ -20,7 +21,12 @@ import (
 //	@host		localhost:8081
 //	@BasePath	/api/v1/nakup
 
-func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotService services.TimeSlotService) {
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type "Bearer" followed by a space and JWT token.
+
+func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotService services.TimeSlotService, authHost string) {
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)
 
@@ -33,23 +39,32 @@ func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotServ
 	v1.Use(middleware.TranslationMiddleware(trans))
 	v1.Use(middleware.ErrorMiddleware)
 	v1.Use(TimeSlotServiceMiddleware(timeSlotService))
+	v1.Use(middleware.UserMiddleware(authHost))
 
 	// Reservations
+	v1.POST("/reservations", ReservationsCreate)
+	v1.GET("/reservations/my", MyReservationsList)
+
+	reservationsStaff := v1.Group("/reservations")
+	reservationsStaff.Use(middleware.RequireRole(models.ModelsUserRoleEmployee, models.ModelsUserRoleAdmin))
+	reservationsStaff.GET("", ReservationsList)
+
 	reservations := v1.Group("/reservations/:reservationID")
 	reservations.Use(ReservationContextMiddleware)
-
-	v1.GET("/reservations", ReservationsList)
+	reservations.Use(middleware.RequireRole(models.ModelsUserRoleEmployee, models.ModelsUserRoleAdmin))
 	reservations.GET("", ReservationsShow)
-	v1.POST("/reservations", ReservationsCreate)
 	reservations.PUT("", ReservationsUpdate)
 	reservations.DELETE("", ReservationsDelete)
 
 	// Purchases
-	reservations.GET("/purchases", PurchasesList)
-	reservations.GET("/purchases/:purchaseID", PurchasesShow)
-	reservations.POST("/purchases", PurchasesCreate)
-	reservations.PUT("/purchases/:purchaseID", PurchasesUpdate)
-	reservations.DELETE("/purchases/:purchaseID", PurchasesDelete)
+	purchases := v1.Group("/reservations/:reservationID/purchases")
+	purchases.Use(ReservationContextMiddleware)
+	purchases.Use(middleware.RequireRole(models.ModelsUserRoleEmployee, models.ModelsUserRoleAdmin))
+	purchases.GET("", PurchasesList)
+	purchases.GET("/:purchaseID", PurchasesShow)
+	purchases.POST("", PurchasesCreate)
+	purchases.PUT("/:purchaseID", PurchasesUpdate)
+	purchases.DELETE("/:purchaseID", PurchasesDelete)
 }
 
 func healthcheck(c *gin.Context) {

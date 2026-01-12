@@ -444,3 +444,47 @@ func TestReservationsDelete(t *testing.T) {
 		})
 	}
 }
+
+func TestMyReservationsList(t *testing.T) {
+	db, fixtures := database.PrepareTestDatabase(t, db.FixtureFS, db.MigrationsFS)
+	service := services.NewMockTimeSlotService()
+	r := TestingRouter(t, db, service)
+
+	tests := []struct {
+		name   string
+		status int
+		params string
+	}{
+		{
+			name:   "ok",
+			status: http.StatusOK,
+		},
+		{
+			name:   "ok-paginated",
+			status: http.StatusOK,
+			params: "?limit=1&offset=0",
+		},
+		{
+			name:   "ok-sort",
+			status: http.StatusOK,
+			params: "?sort=-updated_at",
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			err := fixtures.Load()
+			assert.NoError(t, err)
+
+			targetURL := fmt.Sprintf("/api/v1/nakup/reservations/my%s", testCase.params)
+
+			req := xtesting.NewTestingRequest(t, targetURL, http.MethodGet, nil)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			assert.Equal(t, testCase.status, w.Code)
+			xtesting.AssertGoldenJSON(t, w)
+		})
+	}
+}

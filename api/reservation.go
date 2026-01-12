@@ -45,6 +45,7 @@ func newReservationResponse(reservation models.Reservation) ReservationResponse 
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
 //	@Param			offset	query		int		false	"Offset the first response"		Default(0)
 //	@Param			sort	query		string	false	"Sort results"
@@ -59,6 +60,44 @@ func ReservationsList(c *gin.Context) {
 	sort := request.GetSortOptions(c)
 
 	reservations, total, err := models.GetReservations(tx, pagination, sort)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	response := []ReservationResponse{}
+
+	for _, reservation := range reservations {
+		response = append(response, newReservationResponse(reservation))
+	}
+
+	request.RenderPaginatedResponse(c, response, total)
+}
+
+// MyReservationsList
+//
+//	@Id				MyReservationsList
+//	@Summary		List my reservations
+//	@Description	List reservations for the currently authenticated user
+//	@Tags			reservations
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
+//	@Param			offset	query		int		false	"Offset the first response"		Default(0)
+//	@Param			sort	query		string	false	"Sort results"
+//	@Success		200		{object}	request.PaginatedResponse{data=[]ReservationResponse}
+//	@Failure		400		{object}	middleware.HttpError
+//	@Failure		401		{object}	middleware.HttpError
+//	@Failure		500		{object}	middleware.HttpError
+//	@Router			/reservations/my [get]
+func MyReservationsList(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	userID := middleware.GetContextUserID(c)
+	pagination := request.GetNormalizedPaginationArgs(c)
+	sort := request.GetSortOptions(c)
+
+	reservations, total, err := models.GetUserReservations(tx, userID, pagination, sort)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -90,6 +129,7 @@ type ReservationRequest struct {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			request	body		ReservationRequest	true	"request body"
 //	@Success		200		{object}	ReservationResponse
 //	@Failure		400		{object}	middleware.HttpError
@@ -142,10 +182,12 @@ func ReservationsCreate(c *gin.Context) {
 		return
 	}
 
+	userID := middleware.GetContextUserID(c)
+
 	reservation := models.Reservation{
 		ID:         uuid.New(),
 		TimeSlotID: req.TimeSlotID,
-		UserID:     uuid.Nil,
+		UserID:     userID,
 		Type:       req.Type,
 		Row:        req.Row,
 		Col:        req.Col,
@@ -168,6 +210,7 @@ func ReservationsCreate(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string	true	"Reservation ID"	Format(uuid)
 //	@Success		200				{object}	ReservationResponse
 //	@Failure		400				{object}	middleware.HttpError
@@ -187,6 +230,7 @@ func ReservationsShow(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string				true	"Reservation ID"	Format(uuid)
 //	@Param			request			body		ReservationRequest	true	"request body"
 //	@Success		200				{object}	ReservationResponse
@@ -263,6 +307,7 @@ func ReservationsUpdate(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path	string	true	"Reservation ID"	Format(uuid)
 //	@Success		204
 //	@Failure		400	{object}	middleware.HttpError
