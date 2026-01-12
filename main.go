@@ -11,8 +11,8 @@ import (
 	"github.com/PRPO-skupina-02/common/validation"
 	"github.com/PRPO-skupina-02/nakup/api"
 	"github.com/PRPO-skupina-02/nakup/clients/spored/client"
+	"github.com/PRPO-skupina-02/nakup/db"
 	"github.com/PRPO-skupina-02/nakup/services"
-	"github.com/PRPO-skupina-02/spored/db"
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
 )

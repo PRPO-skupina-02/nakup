@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log/slog"
+
 	"github.com/PRPO-skupina-02/common/middleware"
 	"github.com/PRPO-skupina-02/nakup/clients/spored/client/timeslots"
 	"github.com/go-openapi/strfmt"
@@ -29,6 +31,7 @@ func (v *SporedTimeSlotValidator) ValidateTimeSlotExists(theaterID, roomID, time
 
 	_, err := v.client.TimeSlotsShow(params)
 	if err != nil {
+		slog.Error("failed to fetch timeslot", "err", err)
 		return middleware.NewNotFoundError()
 	}
 
