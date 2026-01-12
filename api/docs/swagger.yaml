@@ -180,6 +180,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: List reservations
       tags:
       - reservations
@@ -214,6 +216,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Create reservation
       tags:
       - reservations
@@ -247,6 +251,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Delete reservation
       tags:
       - reservations
@@ -281,6 +287,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Show reservation
       tags:
       - reservations
@@ -321,6 +329,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Update reservation
       tags:
       - reservations
@@ -377,6 +387,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: List purchases
       tags:
       - purchases
@@ -417,6 +429,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Create purchase
       tags:
       - purchases
@@ -456,6 +470,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Delete purchase
       tags:
       - purchases
@@ -496,6 +512,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Show purchase
       tags:
       - purchases
@@ -542,6 +560,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: Update purchase
       tags:
       - purchases
@@ -592,7 +612,15 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/middleware.HttpError'
+      security:
+      - BearerAuth: []
       summary: List my reservations
       tags:
       - reservations
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

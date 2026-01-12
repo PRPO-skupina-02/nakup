@@ -21,6 +21,11 @@ import (
 //	@host		localhost:8081
 //	@BasePath	/api/v1/nakup
 
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type "Bearer" followed by a space and JWT token.
+
 func Register(router *gin.Engine, db *gorm.DB, trans ut.Translator, timeSlotService services.TimeSlotService, authHost string) {
 	// Healthcheck
 	router.GET("/healthcheck", healthcheck)

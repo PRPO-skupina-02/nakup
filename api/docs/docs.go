@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/reservations": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "List reservations",
                 "consumes": [
                     "application/json"
@@ -94,6 +99,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create reservation",
                 "consumes": [
                     "application/json"
@@ -147,6 +157,11 @@ const docTemplate = `{
         },
         "/reservations/my": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "List reservations for the currently authenticated user",
                 "consumes": [
                     "application/json"
@@ -226,6 +241,11 @@ const docTemplate = `{
         },
         "/reservations/{reservationID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Show reservation",
                 "consumes": [
                     "application/json"
@@ -276,6 +296,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update reservation",
                 "consumes": [
                     "application/json"
@@ -335,6 +360,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete reservation",
                 "consumes": [
                     "application/json"
@@ -384,6 +414,11 @@ const docTemplate = `{
         },
         "/reservations/{reservationID}/purchases": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "List purchases",
                 "consumes": [
                     "application/json"
@@ -469,6 +504,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create purchase",
                 "consumes": [
                     "application/json"
@@ -530,6 +570,11 @@ const docTemplate = `{
         },
         "/reservations/{reservationID}/purchases/{purchaseID}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Show purchase",
                 "consumes": [
                     "application/json"
@@ -588,6 +633,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update purchase",
                 "consumes": [
                     "application/json"
@@ -655,6 +705,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete purchase",
                 "consumes": [
                     "application/json"
@@ -894,6 +949,14 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

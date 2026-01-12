@@ -45,6 +45,7 @@ func newReservationResponse(reservation models.Reservation) ReservationResponse 
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
 //	@Param			offset	query		int		false	"Offset the first response"		Default(0)
 //	@Param			sort	query		string	false	"Sort results"
@@ -81,6 +82,7 @@ func ReservationsList(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
 //	@Param			offset	query		int		false	"Offset the first response"		Default(0)
 //	@Param			sort	query		string	false	"Sort results"
@@ -127,6 +129,7 @@ type ReservationRequest struct {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			request	body		ReservationRequest	true	"request body"
 //	@Success		200		{object}	ReservationResponse
 //	@Failure		400		{object}	middleware.HttpError
@@ -207,6 +210,7 @@ func ReservationsCreate(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string	true	"Reservation ID"	Format(uuid)
 //	@Success		200				{object}	ReservationResponse
 //	@Failure		400				{object}	middleware.HttpError
@@ -226,6 +230,7 @@ func ReservationsShow(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path		string				true	"Reservation ID"	Format(uuid)
 //	@Param			request			body		ReservationRequest	true	"request body"
 //	@Success		200				{object}	ReservationResponse
@@ -302,6 +307,7 @@ func ReservationsUpdate(c *gin.Context) {
 //	@Tags			reservations
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerAuth
 //	@Param			reservationID	path	string	true	"Reservation ID"	Format(uuid)
 //	@Success		204
 //	@Failure		400	{object}	middleware.HttpError
