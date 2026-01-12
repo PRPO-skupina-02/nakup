@@ -54,7 +54,7 @@ func run() error {
 	api.Register(router, db, trans, timeSlotService, authHost)
 
 	slog.Info("Server startup complete")
-	err = router.Run(":8081")
+	err = router.Run(":8080")
 	if err != nil {
 		return err
 	}

@@ -20,6 +20,6 @@ WORKDIR /app
 
 COPY --from=build /nakup /app/nakup
 
-EXPOSE 8081
+EXPOSE 8080
 
 ENTRYPOINT [ "/app/nakup" ]
