@@ -6,13 +6,17 @@ package movies
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 	stderrors "errors"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/PRPO-skupina-02/nakup/clients/spored/models"
 )
@@ -65,7 +69,7 @@ MoviesListOK describes a response with status code 200, with default header valu
 OK
 */
 type MoviesListOK struct {
-	Payload []*models.APIMovieResponse
+	Payload *MoviesListOKBody
 }
 
 // IsSuccess returns true when this movies list o k response has a 2xx status code
@@ -108,14 +112,16 @@ func (o *MoviesListOK) String() string {
 	return fmt.Sprintf("[GET /movies][%d] moviesListOK %s", 200, payload)
 }
 
-func (o *MoviesListOK) GetPayload() []*models.APIMovieResponse {
+func (o *MoviesListOK) GetPayload() *MoviesListOKBody {
 	return o.Payload
 }
 
 func (o *MoviesListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(MoviesListOKBody)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -329,5 +335,177 @@ func (o *MoviesListInternalServerError) readResponse(response runtime.ClientResp
 		return err
 	}
 
+	return nil
+}
+
+/*
+MoviesListOKBody movies list o k body
+swagger:model MoviesListOKBody
+*/
+type MoviesListOKBody struct {
+	models.RequestPaginatedResponse
+
+	// data
+	Data []*models.APIMovieResponse `json:"data"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (o *MoviesListOKBody) UnmarshalJSON(raw []byte) error {
+	// MoviesListOKBodyAO0
+	var moviesListOKBodyAO0 models.RequestPaginatedResponse
+	if err := swag.ReadJSON(raw, &moviesListOKBodyAO0); err != nil {
+		return err
+	}
+	o.RequestPaginatedResponse = moviesListOKBodyAO0
+
+	// MoviesListOKBodyAO1
+	var dataMoviesListOKBodyAO1 struct {
+		Data []*models.APIMovieResponse `json:"data"`
+	}
+	if err := swag.ReadJSON(raw, &dataMoviesListOKBodyAO1); err != nil {
+		return err
+	}
+
+	o.Data = dataMoviesListOKBodyAO1.Data
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (o MoviesListOKBody) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	moviesListOKBodyAO0, err := swag.WriteJSON(o.RequestPaginatedResponse)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, moviesListOKBodyAO0)
+	var dataMoviesListOKBodyAO1 struct {
+		Data []*models.APIMovieResponse `json:"data"`
+	}
+
+	dataMoviesListOKBodyAO1.Data = o.Data
+
+	jsonDataMoviesListOKBodyAO1, errMoviesListOKBodyAO1 := swag.WriteJSON(dataMoviesListOKBodyAO1)
+	if errMoviesListOKBodyAO1 != nil {
+		return nil, errMoviesListOKBodyAO1
+	}
+	_parts = append(_parts, jsonDataMoviesListOKBodyAO1)
+	return swag.ConcatJSON(_parts...), nil
+}
+
+// Validate validates this movies list o k body
+func (o *MoviesListOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.Validate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateData(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *MoviesListOKBody) validateData(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Data) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
+		}
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("moviesListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("moviesListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this movies list o k body based on the context it is used
+func (o *MoviesListOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.ContextValidate(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *MoviesListOKBody) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Data); i++ {
+
+		if o.Data[i] != nil {
+
+			if swag.IsZero(o.Data[i]) { // not required
+				return nil
+			}
+
+			if err := o.Data[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("moviesListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("moviesListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *MoviesListOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *MoviesListOKBody) UnmarshalBinary(b []byte) error {
+	var res MoviesListOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

@@ -48,7 +48,7 @@ func newReservationResponse(reservation models.Reservation) ReservationResponse 
 //	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
 //	@Param			offset	query		int		false	"Offset the first response"		Default(0)
 //	@Param			sort	query		string	false	"Sort results"
-//	@Success		200		{object}	[]ReservationResponse
+//	@Success		200		{object}	request.PaginatedResponse{data=[]ReservationResponse}
 //	@Failure		400		{object}	middleware.HttpError
 //	@Failure		404		{object}	middleware.HttpError
 //	@Failure		500		{object}	middleware.HttpError
