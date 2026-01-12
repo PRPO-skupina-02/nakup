@@ -73,6 +73,43 @@ func ReservationsList(c *gin.Context) {
 	request.RenderPaginatedResponse(c, response, total)
 }
 
+// MyReservationsList
+//
+//	@Id				MyReservationsList
+//	@Summary		List my reservations
+//	@Description	List reservations for the currently authenticated user
+//	@Tags			reservations
+//	@Accept			json
+//	@Produce		json
+//	@Param			limit	query		int		false	"Limit the number of responses"	Default(10)
+//	@Param			offset	query		int		false	"Offset the first response"		Default(0)
+//	@Param			sort	query		string	false	"Sort results"
+//	@Success		200		{object}	request.PaginatedResponse{data=[]ReservationResponse}
+//	@Failure		400		{object}	middleware.HttpError
+//	@Failure		401		{object}	middleware.HttpError
+//	@Failure		500		{object}	middleware.HttpError
+//	@Router			/reservations/my [get]
+func MyReservationsList(c *gin.Context) {
+	tx := middleware.GetContextTransaction(c)
+	userID := middleware.GetContextUserID(c)
+	pagination := request.GetNormalizedPaginationArgs(c)
+	sort := request.GetSortOptions(c)
+
+	reservations, total, err := models.GetUserReservations(tx, userID, pagination, sort)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	response := []ReservationResponse{}
+
+	for _, reservation := range reservations {
+		response = append(response, newReservationResponse(reservation))
+	}
+
+	request.RenderPaginatedResponse(c, response, total)
+}
+
 type ReservationRequest struct {
 	TimeSlotID uuid.UUID              `json:"time_slot_id" binding:"required"`
 	TheaterID  uuid.UUID              `json:"theater_id" binding:"required"`
@@ -142,10 +179,12 @@ func ReservationsCreate(c *gin.Context) {
 		return
 	}
 
+	userID := middleware.GetContextUserID(c)
+
 	reservation := models.Reservation{
 		ID:         uuid.New(),
 		TimeSlotID: req.TimeSlotID,
-		UserID:     uuid.Nil,
+		UserID:     userID,
 		Type:       req.Type,
 		Row:        req.Row,
 		Col:        req.Col,

@@ -48,8 +48,10 @@ func run() error {
 
 	timeSlotService := services.NewSporedTimeSlotService(sporedClient)
 
+	authHost := config.GetEnv("AUTH_HOST")
+
 	router := gin.Default()
-	api.Register(router, db, trans, timeSlotService)
+	api.Register(router, db, trans, timeSlotService, authHost)
 
 	slog.Info("Server startup complete")
 	err = router.Run(":8081")

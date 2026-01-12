@@ -14,6 +14,8 @@ github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERo
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/PRPO-skupina-02/common v0.4.1 h1:yuUgxIwB/wJo5SuHCg4aGKWGgEnLlnHABPZL1wZu58E=
 github.com/PRPO-skupina-02/common v0.4.1/go.mod h1:GtaOsn3KRtMRM4/Raw9G0ob1eCCojFwQEhkCisNyS+Q=
+github.com/PRPO-skupina-02/common v0.6.0 h1:dRg2lqZZRzDEeYSVC+bra1Ra98LAyU/Hl3Kyl9ndL08=
+github.com/PRPO-skupina-02/common v0.6.0/go.mod h1:UlG4EnYxplTT4osiMzK7Z9auN+Rx/rr81+sdJOQQjNQ=
 github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=
 github.com/buger/jsonparser v1.1.1/go.mod h1:6RYKKt7H4d4+iWqouImQ9R2FZql3VbhNgx27UK13J/0=
 github.com/bytedance/sonic v1.14.0 h1:/OfKt8HFw0kh2rj8N0F6C/qPGRESq0BbaNZgcNXXzQQ=

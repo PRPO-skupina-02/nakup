@@ -61,6 +61,23 @@ func GetReservations(tx *gorm.DB, pagination *request.PaginationOptions, sort *r
 	return reservations, int(total), nil
 }
 
+func GetUserReservations(tx *gorm.DB, userID uuid.UUID, pagination *request.PaginationOptions, sort *request.SortOptions) ([]Reservation, int, error) {
+	var reservations []Reservation
+
+	query := tx.Model(&Reservation{}).Where("user_id = ?", userID).Session(&gorm.Session{})
+
+	if err := query.Scopes(request.PaginateScope(pagination), request.SortScope(sort)).Find(&reservations).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return reservations, int(total), nil
+}
+
 func GetReservation(tx *gorm.DB, id uuid.UUID) (Reservation, error) {
 	reservation := Reservation{
 		ID: id,

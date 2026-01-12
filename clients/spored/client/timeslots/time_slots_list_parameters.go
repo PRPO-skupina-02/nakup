@@ -62,6 +62,14 @@ TimeSlotsListParams contains all the parameters to send to the API endpoint
 */
 type TimeSlotsListParams struct {
 
+	/* Date.
+
+	   Filter by date (YYYY-MM-DD)
+
+	   Format: date
+	*/
+	Date *strfmt.Date
+
 	/* Limit.
 
 	   Limit the number of responses
@@ -165,6 +173,17 @@ func (o *TimeSlotsListParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithDate adds the date to the time slots list params
+func (o *TimeSlotsListParams) WithDate(date *strfmt.Date) *TimeSlotsListParams {
+	o.SetDate(date)
+	return o
+}
+
+// SetDate adds the date to the time slots list params
+func (o *TimeSlotsListParams) SetDate(date *strfmt.Date) {
+	o.Date = date
+}
+
 // WithLimit adds the limit to the time slots list params
 func (o *TimeSlotsListParams) WithLimit(limit *int64) *TimeSlotsListParams {
 	o.SetLimit(limit)
@@ -227,6 +246,23 @@ func (o *TimeSlotsListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+
+	if o.Date != nil {
+
+		// query param date
+		var qrDate strfmt.Date
+
+		if o.Date != nil {
+			qrDate = *o.Date
+		}
+		qDate := qrDate.String()
+		if qDate != "" {
+
+			if err := r.SetQueryParam("date", qDate); err != nil {
+				return err
+			}
+		}
+	}
 
 	if o.Limit != nil {
 

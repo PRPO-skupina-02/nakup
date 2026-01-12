@@ -545,4 +545,54 @@ paths:
       summary: Update purchase
       tags:
       - purchases
+  /reservations/my:
+    get:
+      consumes:
+      - application/json
+      description: List reservations for the currently authenticated user
+      operationId: MyReservationsList
+      parameters:
+      - default: 10
+        description: Limit the number of responses
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset the first response
+        in: query
+        name: offset
+        type: integer
+      - description: Sort results
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/request.PaginatedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/api.ReservationResponse'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.HttpError'
+      summary: List my reservations
+      tags:
+      - reservations
 swagger: "2.0"
