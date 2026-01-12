@@ -4,36 +4,63 @@ import (
 	"log/slog"
 
 	"github.com/PRPO-skupina-02/common/middleware"
+	"github.com/PRPO-skupina-02/nakup/clients/spored/client"
+	"github.com/PRPO-skupina-02/nakup/clients/spored/client/rooms"
 	"github.com/PRPO-skupina-02/nakup/clients/spored/client/timeslots"
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 )
 
-type TimeSlotValidator interface {
-	ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) error
+type TimeSlotInfo struct {
+	TimeSlotID uuid.UUID
+	RoomID     uuid.UUID
+	TheaterID  uuid.UUID
+	Rows       int
+	Columns    int
 }
 
-type SporedTimeSlotValidator struct {
-	client timeslots.ClientService
+type TimeSlotService interface {
+	ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) (*TimeSlotInfo, error)
 }
 
-func NewSporedTimeSlotValidator(client timeslots.ClientService) TimeSlotValidator {
-	return &SporedTimeSlotValidator{
-		client: client,
+type SporedTimeSlotService struct {
+	timeslotClient timeslots.ClientService
+	roomClient     rooms.ClientService
+}
+
+func NewSporedTimeSlotService(client *client.Spored) TimeSlotService {
+	return &SporedTimeSlotService{
+		timeslotClient: client.Timeslots,
+		roomClient:     client.Rooms,
 	}
 }
 
-func (v *SporedTimeSlotValidator) ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) error {
+func (v *SporedTimeSlotService) ValidateTimeSlotExists(theaterID, roomID, timeSlotID uuid.UUID) (*TimeSlotInfo, error) {
 	params := timeslots.NewTimeSlotsShowParams()
 	params.TheaterID = strfmt.UUID(theaterID.String())
 	params.RoomID = strfmt.UUID(roomID.String())
 	params.TimeSlotID = strfmt.UUID(timeSlotID.String())
 
-	_, err := v.client.TimeSlotsShow(params)
+	_, err := v.timeslotClient.TimeSlotsShow(params)
 	if err != nil {
 		slog.Error("failed to fetch timeslot", "err", err)
-		return middleware.NewNotFoundError()
+		return nil, middleware.NewNotFoundError()
 	}
 
-	return nil
+	roomParams := rooms.NewRoomsShowParams()
+	roomParams.TheaterID = strfmt.UUID(theaterID.String())
+	roomParams.RoomID = strfmt.UUID(roomID.String())
+
+	roomResp, err := v.roomClient.RoomsShow(roomParams)
+	if err != nil {
+		return nil, middleware.NewNotFoundError()
+	}
+
+	return &TimeSlotInfo{
+		TimeSlotID: timeSlotID,
+		RoomID:     roomID,
+		TheaterID:  theaterID,
+		Rows:       int(roomResp.Payload.Rows),
+		Columns:    int(roomResp.Payload.Columns),
+	}, nil
 }

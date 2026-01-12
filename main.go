@@ -46,10 +46,10 @@ func run() error {
 	transportConfig := client.DefaultTransportConfig().WithHost(sporedHost)
 	sporedClient := client.NewHTTPClientWithConfig(strfmt.Default, transportConfig)
 
-	timeSlotValidator := services.NewSporedTimeSlotValidator(sporedClient.Timeslots)
+	timeSlotService := services.NewSporedTimeSlotService(sporedClient)
 
 	router := gin.Default()
-	api.Register(router, db, trans, timeSlotValidator)
+	api.Register(router, db, trans, timeSlotService)
 
 	slog.Info("Server startup complete")
 	err = router.Run(":8081")
