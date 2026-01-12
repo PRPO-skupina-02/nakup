@@ -6,13 +6,17 @@ package theaters
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 	stderrors "errors"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/PRPO-skupina-02/nakup/clients/spored/models"
 )
@@ -65,7 +69,7 @@ TheatersListOK describes a response with status code 200, with default header va
 OK
 */
 type TheatersListOK struct {
-	Payload []*models.APITheaterResponse
+	Payload *TheatersListOKBody
 }
 
 // IsSuccess returns true when this theaters list o k response has a 2xx status code
@@ -108,14 +112,16 @@ func (o *TheatersListOK) String() string {
 	return fmt.Sprintf("[GET /theaters][%d] theatersListOK %s", 200, payload)
 }
 
-func (o *TheatersListOK) GetPayload() []*models.APITheaterResponse {
+func (o *TheatersListOK) GetPayload() *TheatersListOKBody {
 	return o.Payload
 }
 
 func (o *TheatersListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(TheatersListOKBody)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -329,5 +335,177 @@ func (o *TheatersListInternalServerError) readResponse(response runtime.ClientRe
 		return err
 	}
 
+	return nil
+}
+
+/*
+TheatersListOKBody theaters list o k body
+swagger:model TheatersListOKBody
+*/
+type TheatersListOKBody struct {
+	models.RequestPaginatedResponse
+
+	// data
+	Data []*models.APITheaterResponse `json:"data"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (o *TheatersListOKBody) UnmarshalJSON(raw []byte) error {
+	// TheatersListOKBodyAO0
+	var theatersListOKBodyAO0 models.RequestPaginatedResponse
+	if err := swag.ReadJSON(raw, &theatersListOKBodyAO0); err != nil {
+		return err
+	}
+	o.RequestPaginatedResponse = theatersListOKBodyAO0
+
+	// TheatersListOKBodyAO1
+	var dataTheatersListOKBodyAO1 struct {
+		Data []*models.APITheaterResponse `json:"data"`
+	}
+	if err := swag.ReadJSON(raw, &dataTheatersListOKBodyAO1); err != nil {
+		return err
+	}
+
+	o.Data = dataTheatersListOKBodyAO1.Data
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (o TheatersListOKBody) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	theatersListOKBodyAO0, err := swag.WriteJSON(o.RequestPaginatedResponse)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, theatersListOKBodyAO0)
+	var dataTheatersListOKBodyAO1 struct {
+		Data []*models.APITheaterResponse `json:"data"`
+	}
+
+	dataTheatersListOKBodyAO1.Data = o.Data
+
+	jsonDataTheatersListOKBodyAO1, errTheatersListOKBodyAO1 := swag.WriteJSON(dataTheatersListOKBodyAO1)
+	if errTheatersListOKBodyAO1 != nil {
+		return nil, errTheatersListOKBodyAO1
+	}
+	_parts = append(_parts, jsonDataTheatersListOKBodyAO1)
+	return swag.ConcatJSON(_parts...), nil
+}
+
+// Validate validates this theaters list o k body
+func (o *TheatersListOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.Validate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateData(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TheatersListOKBody) validateData(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Data) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
+		}
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("theatersListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("theatersListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this theaters list o k body based on the context it is used
+func (o *TheatersListOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.ContextValidate(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TheatersListOKBody) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Data); i++ {
+
+		if o.Data[i] != nil {
+
+			if swag.IsZero(o.Data[i]) { // not required
+				return nil
+			}
+
+			if err := o.Data[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("theatersListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("theatersListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *TheatersListOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *TheatersListOKBody) UnmarshalBinary(b []byte) error {
+	var res TheatersListOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

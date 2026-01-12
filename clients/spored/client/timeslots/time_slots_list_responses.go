@@ -6,13 +6,17 @@ package timeslots
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 	stderrors "errors"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/PRPO-skupina-02/nakup/clients/spored/models"
 )
@@ -65,7 +69,7 @@ TimeSlotsListOK describes a response with status code 200, with default header v
 OK
 */
 type TimeSlotsListOK struct {
-	Payload []*models.APITimeSlotResponse
+	Payload *TimeSlotsListOKBody
 }
 
 // IsSuccess returns true when this time slots list o k response has a 2xx status code
@@ -108,14 +112,16 @@ func (o *TimeSlotsListOK) String() string {
 	return fmt.Sprintf("[GET /theaters/{theaterID}/rooms/{roomID}/timeslots][%d] timeSlotsListOK %s", 200, payload)
 }
 
-func (o *TimeSlotsListOK) GetPayload() []*models.APITimeSlotResponse {
+func (o *TimeSlotsListOK) GetPayload() *TimeSlotsListOKBody {
 	return o.Payload
 }
 
 func (o *TimeSlotsListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(TimeSlotsListOKBody)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -329,5 +335,177 @@ func (o *TimeSlotsListInternalServerError) readResponse(response runtime.ClientR
 		return err
 	}
 
+	return nil
+}
+
+/*
+TimeSlotsListOKBody time slots list o k body
+swagger:model TimeSlotsListOKBody
+*/
+type TimeSlotsListOKBody struct {
+	models.RequestPaginatedResponse
+
+	// data
+	Data []*models.APITimeSlotResponse `json:"data"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (o *TimeSlotsListOKBody) UnmarshalJSON(raw []byte) error {
+	// TimeSlotsListOKBodyAO0
+	var timeSlotsListOKBodyAO0 models.RequestPaginatedResponse
+	if err := swag.ReadJSON(raw, &timeSlotsListOKBodyAO0); err != nil {
+		return err
+	}
+	o.RequestPaginatedResponse = timeSlotsListOKBodyAO0
+
+	// TimeSlotsListOKBodyAO1
+	var dataTimeSlotsListOKBodyAO1 struct {
+		Data []*models.APITimeSlotResponse `json:"data"`
+	}
+	if err := swag.ReadJSON(raw, &dataTimeSlotsListOKBodyAO1); err != nil {
+		return err
+	}
+
+	o.Data = dataTimeSlotsListOKBodyAO1.Data
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (o TimeSlotsListOKBody) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	timeSlotsListOKBodyAO0, err := swag.WriteJSON(o.RequestPaginatedResponse)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, timeSlotsListOKBodyAO0)
+	var dataTimeSlotsListOKBodyAO1 struct {
+		Data []*models.APITimeSlotResponse `json:"data"`
+	}
+
+	dataTimeSlotsListOKBodyAO1.Data = o.Data
+
+	jsonDataTimeSlotsListOKBodyAO1, errTimeSlotsListOKBodyAO1 := swag.WriteJSON(dataTimeSlotsListOKBodyAO1)
+	if errTimeSlotsListOKBodyAO1 != nil {
+		return nil, errTimeSlotsListOKBodyAO1
+	}
+	_parts = append(_parts, jsonDataTimeSlotsListOKBodyAO1)
+	return swag.ConcatJSON(_parts...), nil
+}
+
+// Validate validates this time slots list o k body
+func (o *TimeSlotsListOKBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.Validate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateData(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TimeSlotsListOKBody) validateData(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Data) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
+		}
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("timeSlotsListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("timeSlotsListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this time slots list o k body based on the context it is used
+func (o *TimeSlotsListOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	// validation for a type composition with models.RequestPaginatedResponse
+	if err := o.RequestPaginatedResponse.ContextValidate(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *TimeSlotsListOKBody) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Data); i++ {
+
+		if o.Data[i] != nil {
+
+			if swag.IsZero(o.Data[i]) { // not required
+				return nil
+			}
+
+			if err := o.Data[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("timeSlotsListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("timeSlotsListOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *TimeSlotsListOKBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *TimeSlotsListOKBody) UnmarshalBinary(b []byte) error {
+	var res TimeSlotsListOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }
