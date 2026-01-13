@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nakup
+  namespace: production
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: "gce"
+spec:
+  tls:
+  - hosts:
+    - nakup.prpo.timhrovat.com
+    secretName: nakup-tls
+  rules:
+  - host: nakup.prpo.timhrovat.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nakup
+            port:
+              number: 8080

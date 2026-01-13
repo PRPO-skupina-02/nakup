@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nakup
+  namespace: production
+  labels:
+    app: nakup
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nakup
+  template:
+    metadata:
+      labels:
+        app: nakup
+    spec:
+      serviceAccountName: nakup-sa
+      containers:
+      - name: nakup
+        image: ghcr.io/prpo-skupina-02/nakup:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: nakup-config
+              key: LOG_LEVEL
+        - name: TZ
+          value: "Europe/Ljubljana"
+        - name: POSTGRES_IP
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-db-credentials
+              key: host
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-db-credentials
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-db-credentials
+              key: password
+        - name: POSTGRES_DATABASE_NAME
+          value: "nakup"
+        - name: SPORED_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: nakup-config
+              key: SPORED_HOST
+        - name: AUTH_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: nakup-config
+              key: AUTH_HOST
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
