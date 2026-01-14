@@ -4,15 +4,14 @@ metadata:
   name: nakup
   namespace: production
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: "gce"
 spec:
   tls:
   - hosts:
-    - nakup.prpo.timhrovat.com
+    - nakup.cinecore.timhrovat.com
     secretName: nakup-tls
   rules:
-  - host: nakup.prpo.timhrovat.com
+  - host: nakup.cinecore.timhrovat.com
     http:
       paths:
       - path: /
